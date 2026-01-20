@@ -187,7 +187,7 @@ Always test using Pest tests.
 
 # 16. If working in Filament v4
 
-If you are working Filament v4, you must know that 
+If you are working Filament v4, you must know that Sections, Grids and other general form/infolist components are now under Filament Schemas.
 
 **These rules are mandatory.  
 Violations must be rejected during review.**
