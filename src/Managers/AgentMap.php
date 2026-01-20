@@ -3,8 +3,6 @@
 namespace Vormkracht10\Agents\Managers;
 
 use Illuminate\Support\Manager;
-use Vormkracht10\Agents\Managers\AgentDriver;
-use Vormkracht10\Agents\Contracts\DriverContract;
 
 class AgentMap extends Manager
 {
