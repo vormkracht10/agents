@@ -4,7 +4,9 @@
     "keywords": [
         "Vormkracht10",
         "laravel",
-        "agents"
+        "agents",
+        "testing",
+        "development"
     ],
     "homepage": "https://github.com/vormkracht10/agents",
     "license": "MIT",

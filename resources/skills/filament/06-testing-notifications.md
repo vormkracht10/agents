@@ -1,0 +1,82 @@
+---
+title: Testing Notifications
+description: Guide to testing Filament v4 session notifications including asserting notification titles, content, and verifying notifications were or were not sent.
+---
+
+## Testing session notifications
+
+To check if a notification was sent using the session, use the `assertNotified()` helper:
+
+```php
+use function Pest\Livewire\livewire;
+
+it('Livewire::test(otification', function () {
+    livewire(CreatePost::class)
+        ->assertNotified();
+});
+```
+
+```php
+use Filament\Notifications\Notification;
+
+it('sends a notification', function () {
+    Notification::assertNotified();
+});
+```
+
+```php
+use function Filament\Notifications\Testing\assertNotified;
+
+it('sends a notification', function () {
+    assertNotified();
+});
+```
+
+You may optionally pass a notification title to test for:
+
+```php
+use Filament\Notifications\Notification;
+use function Pest\Livewire\livewire;
+
+it('Livewire::test(otification', function () {
+    livewire(CreatePost::class)
+        ->assertNotified('Unable to create post');
+});
+```
+
+Or test if the exact notification was sent:
+
+```php
+use Filament\Notifications\Notification;
+use function Pest\Livewire\livewire;
+
+it('Livewire::test(otification', function () {
+    livewire(CreatePost::class)
+        ->assertNotified(
+            Notification::make()
+                ->danger()
+                ->title('Unable to create post')
+                ->body('Something went wrong.'),
+        );
+});
+```
+
+Conversely, you can assert that a notification was not sent:
+
+```php
+use Filament\Notifications\Notification;
+use function Pest\Livewire\livewire;
+
+it('Livewire::test(send a notification', function () {
+    livewire(CreatePost::class)
+        ->assertNotNotified()
+        // or
+        ->assertNotNotified('Unable to create post')
+        // or
+        ->assertNotNotified(
+            Notification::make()
+                ->danger()
+                ->title('Unable to create post')
+                ->body('Something went wrong.'),
+        );
+```

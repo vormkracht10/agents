@@ -4,20 +4,20 @@ namespace Vormkracht10\Agents\Drivers;
 
 use Vormkracht10\Agents\Managers\AgentDriver;
 
-class PestDriver extends AgentDriver
+class FilamentDriver extends AgentDriver
 {
     public function getSlug(): string
     {
-        return 'pestphp/pest';
+        return 'filament/filament';
     }
 
     public function getPath(): string
     {
-        return 'pest';
+        return 'filament';
     }
 
     public function getTitle(): string
     {
-        return 'Pest testing framework';
+        return 'Filament admin panel';
     }
 }

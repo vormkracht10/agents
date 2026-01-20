@@ -2,6 +2,7 @@
 
 namespace Vormkracht10\Agents\Managers;
 
+use Illuminate\Support\Facades\File;
 use Vormkracht10\Agents\Contracts\DriverContract;
 
 abstract class AgentDriver implements DriverContract
@@ -15,5 +16,31 @@ abstract class AgentDriver implements DriverContract
 
     abstract public function getTitle(): mixed;
 
-    abstract public function getRules(): string;
+    protected function getResourcesPath(): string
+    {
+        return dirname(__DIR__, 2) . '/resources';
+    }
+
+    public function getRules(): string
+    {
+        return $this->getResourcesPath() . '/rules/' . $this->getPath() . '/rules.md';
+    }
+
+    public function getSkills(): array
+    {
+        $resourcePath = $this->getResourcesPath() . '/skills/' . $this->getPath() . '/';
+
+        if (! File::isDirectory($resourcePath)) {
+            return [];
+        }
+
+        $skills = File::allFiles($resourcePath);
+
+        $paths = [];
+        foreach ($skills as $skill) {
+            $paths[$skill->getFilename()] = $skill->getPathname();
+        }
+
+        return $paths;
+    }
 }
