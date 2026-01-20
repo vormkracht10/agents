@@ -3,6 +3,7 @@
 namespace Vormkracht10\Agents;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Vormkracht10\Agents\Facades\AgentMap;
 
@@ -16,7 +17,20 @@ class Agents
         $command->info("Collecting packages...\n");
 
         $foundDrivers = $this->listDrivers();
+        
 
+        $lock = json_decode(file_get_contents(base_path('composer.lock')), true);
+
+        $packages = collect($lock['packages'])
+            ->merge($lock['packages-dev'] ?? [])
+            ->map(fn ($p) => [
+                'name' => $p['name'],
+                'version' => $p['version'],
+            ]);
+            
+        $activeDrivers = $packages->filter(fn ($p) => in_array($p['name'], $this->sluggedDrivers()));
+
+        dd($activeDrivers);
         if (empty($foundDrivers)) {
             $command->error('No agents found. Please install an agent package.');
 
@@ -67,5 +81,10 @@ class Agents
         }
 
         return $foundDrivers;
+    }
+
+    public function sluggedDrivers(): array
+    {
+        return collect($this->listDrivers())->map(fn ($driver) => $driver->getSlug())->toArray();
     }
 }
