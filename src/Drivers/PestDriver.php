@@ -18,6 +18,6 @@ class PestDriver extends AgentDriver
 
     public function getTitle(): string
     {
-        return 'Pest testing framework';
+        return 'Pest';
     }
 }

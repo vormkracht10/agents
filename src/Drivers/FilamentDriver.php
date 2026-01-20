@@ -18,6 +18,6 @@ class FilamentDriver extends AgentDriver
 
     public function getTitle(): string
     {
-        return 'Filament admin panel';
+        return 'Filament';
     }
 }

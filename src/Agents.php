@@ -36,14 +36,19 @@ class Agents
 
         $allProviderResources = [];
 
+        // Gather agents first so they can be included in instruction files
+        $agentFiles = File::exists(__DIR__.'/../resources/agents')
+            ? File::allFiles(__DIR__.'/../resources/agents')
+            : [];
+
         foreach ($aiDirs as $dir) {
             $dirPath = base_path($dir);
             $createdResources = [];
 
             File::ensureDirectoryExists($dirPath);
 
-            // Only delete rules and skills directories, preserve other files
-            foreach (['rules', 'skills'] as $subDir) {
+            // Only delete rules, skills and agents directories, preserve other files
+            foreach (['rules', 'skills', 'agents'] as $subDir) {
                 $subDirPath = $dirPath.'/'.$subDir;
 
                 if (File::exists($subDirPath)) {
@@ -89,19 +94,37 @@ class Agents
                 }
             }
 
-            $this->createInstructionFile($dir, $createdResources);
+            // Copy agents to this provider's directory and collect their paths
+            $agentPaths = [];
+            if (! empty($agentFiles)) {
+                $agentDir = $dirPath.'/agents/';
+                File::ensureDirectoryExists($agentDir);
 
-            if (! empty($createdResources)) {
-                $allProviderResources[$dir] = $createdResources;
+                foreach ($agentFiles as $agent) {
+                    $agentName = $agent->getFilename();
+                    $agentPath = $agent->getPathname();
+
+                    File::copy($agentPath, $agentDir.$agentName);
+                    $agentPaths[] = $dir.'/agents/'.$agentName;
+                }
+            }
+
+            $this->createInstructionFile($dir, $createdResources, $agentPaths);
+
+            if (! empty($createdResources) || ! empty($agentPaths)) {
+                $allProviderResources[$dir] = [
+                    'resources' => $createdResources,
+                    'agents' => $agentPaths,
+                ];
             }
         }
 
         $this->updateAgentsFile($allProviderResources);
     }
 
-    protected function createInstructionFile(string $dir, array $resources): void
+    protected function createInstructionFile(string $dir, array $resources, array $agents = []): void
     {
-        if (empty($resources)) {
+        if (empty($resources) && empty($agents)) {
             return;
         }
 
@@ -113,7 +136,7 @@ class Agents
 
         $filePath = base_path($instructionFile);
         $tagName = 'agents-guidelines';
-        $guidelinesContent = $this->buildProviderGuidelinesContent($resources, $tagName);
+        $guidelinesContent = $this->buildProviderGuidelinesContent($resources, $tagName, $agents);
 
         if (File::exists($filePath)) {
             $existingContent = File::get($filePath);
@@ -131,7 +154,7 @@ class Agents
         }
     }
 
-    protected function buildProviderGuidelinesContent(array $resources, string $tagName): string
+    protected function buildProviderGuidelinesContent(array $resources, string $tagName, array $agents = []): string
     {
         $content = "<{$tagName}>\n";
         $content .= "## Agent Skills & Rules\n\n";
@@ -153,6 +176,15 @@ class Agents
                 }
                 $content .= "\n";
             }
+        }
+
+        if (! empty($agents)) {
+            $content .= "### Agents\n\n";
+            $content .= "The following agents are available:\n\n";
+            foreach ($agents as $agent) {
+                $content .= "- [{$agent}]({$agent})\n";
+            }
+            $content .= "\n";
         }
 
         $content .= "</{$tagName}>";
@@ -201,9 +233,12 @@ class Agents
         $content .= "This project has skills and rules configured for the following AI assistants.\n";
         $content .= "Each assistant should read and follow the rules and skills for the relevant drivers.\n\n";
 
-        foreach ($allProviderResources as $dir => $resources) {
+        foreach ($allProviderResources as $dir => $providerData) {
             $providerName = $providerNames[$dir] ?? ucfirst(ltrim($dir, '.'));
             $content .= "### {$providerName}\n\n";
+
+            $resources = $providerData['resources'] ?? [];
+            $agents = $providerData['agents'] ?? [];
 
             foreach ($resources as $resource) {
                 $content .= "#### {$resource['title']}\n\n";
@@ -219,6 +254,14 @@ class Agents
                     }
                 }
 
+                $content .= "\n";
+            }
+
+            if (! empty($agents)) {
+                $content .= "#### Agents\n\n";
+                foreach ($agents as $agent) {
+                    $content .= "- [{$agent}]({$agent})\n";
+                }
                 $content .= "\n";
             }
         }
