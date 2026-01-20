@@ -189,5 +189,17 @@ Always test using Pest tests.
 
 If you are working Filament v4, you must know that Sections, Grids and other general form/infolist components are now under Filament Schemas.
 
+If you define infolists or forms you use:
+```php
+use Filament\Schemas\Schema;
+
+// Same for infolist
+public function form(Schema $schema): Schema {
+  return $form
+    ->components([
+
+    ]);
+}
+
 **These rules are mandatory.  
 Violations must be rejected during review.**
