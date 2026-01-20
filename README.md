@@ -962,6 +962,7 @@ Future enhancements planned:
 
 ## Credits
 
+- [Mark van Eijk](https://github.com/markvaneijk)
 - [Manoj Hortulanus](https://github.com/arduinomaster22)
 - [All Contributors](../../contributors)
 
