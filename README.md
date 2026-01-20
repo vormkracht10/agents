@@ -1,4 +1,4 @@
-# This is my package agents
+# Vormkracht10/UX agents
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/vormkracht10/agents.svg?style=flat-square)](https://packagist.org/packages/vormkracht10/agents)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/vormkracht10/agents/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/vormkracht10/agents/actions?query=workflow%3Arun-tests+branch%3Amain)
