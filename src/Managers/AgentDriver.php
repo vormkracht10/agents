@@ -18,17 +18,17 @@ abstract class AgentDriver implements DriverContract
 
     protected function getResourcesPath(): string
     {
-        return dirname(__DIR__, 2) . '/resources';
+        return dirname(__DIR__, 2).'/resources';
     }
 
     public function getRules(): string
     {
-        return $this->getResourcesPath() . '/rules/' . $this->getPath() . '/rules.md';
+        return $this->getResourcesPath().'/rules/'.$this->getPath().'/rules.md';
     }
 
     public function getSkills(): array
     {
-        $resourcePath = $this->getResourcesPath() . '/skills/' . $this->getPath() . '/';
+        $resourcePath = $this->getResourcesPath().'/skills/'.$this->getPath().'/';
 
         if (! File::isDirectory($resourcePath)) {
             return [];
